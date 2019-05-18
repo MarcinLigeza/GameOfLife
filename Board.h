@@ -22,10 +22,11 @@ public:
     void print();
     void iteration();
     void setRandomPositions();
-    void iterate(int iterations);
     void loadFromFile(string fileName);
+    void iterate(int iterations);
     char getElement(int x, int y);
 
     void saveBoardToFile(std::string file_name);
+    void loadBoardFromFile(boost::filesystem::path path);
 };
 

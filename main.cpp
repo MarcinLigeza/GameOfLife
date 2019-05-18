@@ -21,14 +21,18 @@ using namespace std;
 int main()
 {
     Board board(SIZE);
+    cout << "STARTING\n";
     board.loadFromFile("../GameOfLife/config.txt");
 
     boost::filesystem::path copperhead("/home/marcin/Desktop/gol/GameOfLife/patterns/copperhead.rle");
     cout << copperhead.empty();
     RLE_Encoder tmp;
     std::string xd= tmp.decompress(copperhead);
-    std::cout <<xd << "\n";
-    std::cout <<tmp.compress(xd);
+//    std::cout <<xd << "\n";
+//    std::cout <<tmp.compress(xd);
+
+    boost::filesystem::path boardpath("../boardSave1.txt");
+//    board.loadBoardFromFile(boardpath);
 
     sf::RenderWindow window( sf::VideoMode(SIZE*CUBE_WIDTH + 200, SIZE*CUBE_WIDTH), "Game of Life");
     window.setFramerateLimit(20);
@@ -73,8 +77,8 @@ int main()
                     {
                         if((event.mouseButton.y >= button.getPosition().y) && (event.mouseButton.y <= button.getPosition().y + button.getSize().y))
                         {
-                            board.loadFromFile("../GameOfLife/config.txt");
-                            board.saveBoardToFile("../boardSave1.txt");
+                            board.loadBoardFromFile("../boardSave1.txt");
+//                            board.saveBoardToFile("../boardSave1.txt");
                         }
                     }
                 }

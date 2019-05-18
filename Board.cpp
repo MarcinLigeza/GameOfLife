@@ -8,6 +8,7 @@
 
 #include <boost/filesystem/fstream.hpp>
 #include <boost/algorithm/string.hpp>
+#include <boost/lexical_cast.hpp>
 
 void Board::resize(int isize)
 {
@@ -90,13 +91,6 @@ void Board::iteration()
             aliveCount = 0;
         }
     }
-//    nextboard[size - 1] = nextboard[1];
-//    nextboard[0] = nextboard[size - 2];
-//    for (unsigned i = 0; i < size; i++)
-//    {
-//        nextboard[i][size - 1] = nextboard[i][1];
-//        nextboard[i][0] = nextboard[i][size - 2];
-//    }
 
     board = nextboard;
 }
@@ -135,11 +129,12 @@ void Board::loadFromFile(string fileName)
     ifstream plik;
     plik.open(fileName);
 
+
     int isize{};
     plik >> isize;
     if (isize > size)
         resize(isize);
-  
+
     for (unsigned i = 0; i < isize; i++)
     {
         for (unsigned j = 0; j < isize; j++)
@@ -151,6 +146,7 @@ void Board::loadFromFile(string fileName)
         }
         cout << "\n";
     }
+
 
 }
 
@@ -178,6 +174,40 @@ void Board::saveBoardToFile(string file_name)
 
     board_string = rle_encoder.compress(board_string);
 
+    string dimensions;
+    dimensions += "x = ";
+    dimensions.append(std::to_string(size));
+    dimensions += ", y = ";
+    dimensions.append(std::to_string(size));
+    dimensions += '\n';
+
+    file << dimensions;
+
     file << board_string;
+    file << "\n";
 }
+
+void Board::loadBoardFromFile(boost::filesystem::path path)
+{
+    std::string boardstring = rle_encoder.decompress(path);
+
+    std::cout << boardstring;
+
+    std::vector<std::string> lines;
+    boost::split(lines, boardstring, boost::is_any_of("\n"));
+
+    int x = stoi(lines[0]);
+    int y = stoi(lines[1]);
+
+    for(int i = 0; i < x; i++)
+    {
+        for(int j = 0; j < y; j++)
+        {
+            board[i][j] = lines[i][j];
+        }
+    }
+
+}
+
+
 

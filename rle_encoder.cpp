@@ -50,13 +50,15 @@ std::string RLE_Encoder::decompress(boost::filesystem::path path)
     boost::split(dimensions, lines[0], boost::is_any_of(","));
 
     x = boost::lexical_cast<int>(dimensions[0].substr(4));
-    std::cout << x << "\n";
     y = boost::lexical_cast<int>(dimensions[1].substr(5));
-    std::cout << y << "\n";
 
     std::string decompressed{};
 
+    decompressed += std::to_string(x) + '\n';
+    decompressed += std::to_string(y) + '\n';
+
     lines.erase(lines.begin());
+
 
     for(auto& i : lines)
     {
@@ -82,8 +84,9 @@ std::string RLE_Encoder::decompress(boost::filesystem::path path)
                 do
                 {
                     tmp+=i[j];
+                    if(!isdigit(i[j+1]))
+                        break;
                     j++;
-                    std::cout << tmp;
                 }while(isdigit(i[j]));
 
                 number = boost::lexical_cast<int>(tmp);
@@ -100,7 +103,7 @@ std::string RLE_Encoder::decompress(boost::filesystem::path path)
                 {
                     for(int k =1; k < number; k++)
                     {
-                        decompressed.append(8,'b');
+                        decompressed.append(x,'b');
                         decompressed.append("\n");
                     }
                 }
@@ -166,6 +169,8 @@ std::string RLE_Encoder::compress(std::string pattern)
         tmp+=(compressed[i]);
 
     }
+
+    tmp += '\n';
 
     return tmp;
 }
