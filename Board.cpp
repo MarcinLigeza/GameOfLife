@@ -16,7 +16,7 @@ void Board::resize(int isize)
     for (auto& i : board)
     {
         i.resize(size);
-        fill(i.begin(), i.end(), '-');
+        fill(i.begin(), i.end(), 'b');
     }
 }
 
@@ -52,39 +52,39 @@ void Board::iteration()
     for (auto& i : nextboard)
         i.resize(size);
     for (auto& i : nextboard)
-        fill(i.begin(), i.end(), '-');
+        fill(i.begin(), i.end(), 'b');
 
     int aliveCount{ 0 };
     for (unsigned i = 0; i < size; i++)
     {
         for (unsigned j = 0; j < size; j++)
         {
-            if (board[(i==0) ? (size - 1) : (i - 1)][(j==0) ? (size-1) : (j - 1)] == 'O') aliveCount++;
-            if (board[(i==0) ? (size - 1) : (i - 1)][j] == 'O') aliveCount++;
-            if (board[(i==0) ? (size - 1) : (i - 1)][(j + 1)%size] == 'O') aliveCount++;
-            if (board[i][(j==0) ? (size-1) : (j - 1)] == 'O') aliveCount++;
-            if (board[i][(j + 1)%size] == 'O') aliveCount++;
-            if (board[(i + 1)%size][(j==0) ? (size-1) : (j - 1)] == 'O') aliveCount++;
-            if (board[(i + 1)%size][j] == 'O') aliveCount++;
-            if (board[(i + 1)%size][(j + 1)%size] == 'O') aliveCount++;
+            if (board[(i==0) ? (size - 1) : (i - 1)][(j==0) ? (size-1) : (j - 1)] == 'o') aliveCount++;
+            if (board[(i==0) ? (size - 1) : (i - 1)][j] == 'o') aliveCount++;
+            if (board[(i==0) ? (size - 1) : (i - 1)][(j + 1)%size] == 'o') aliveCount++;
+            if (board[i][(j==0) ? (size-1) : (j - 1)] == 'o') aliveCount++;
+            if (board[i][(j + 1)%size] == 'o') aliveCount++;
+            if (board[(i + 1)%size][(j==0) ? (size-1) : (j - 1)] == 'o') aliveCount++;
+            if (board[(i + 1)%size][j] == 'o') aliveCount++;
+            if (board[(i + 1)%size][(j + 1)%size] == 'o') aliveCount++;
 
-            if (board[i][j] == 'O')
+            if (board[i][j] == 'o')
             {
                 if (aliveCount == 3 || aliveCount == 2)
                 {
-                    nextboard[i][j] = 'O';
+                    nextboard[i][j] = 'o';
                 }
                 else
                 {
-                    nextboard[i][j] = '-';
+                    nextboard[i][j] = 'b';
                 }
             }
             else if (aliveCount == 3)
             {
-                nextboard[i][j] = 'O';
+                nextboard[i][j] = 'o';
             }
             else {
-                nextboard[i][j] = '-';
+                nextboard[i][j] = 'b';
             }
 
             aliveCount = 0;
@@ -110,10 +110,10 @@ void Board::setRandomPositions()
         {
             if (rand() % 10 > 3)
             {
-                j = '-';
+                j = 'b';
             }
             else {
-                j = 'O';
+                j = 'o';
             }
         }
     }
@@ -157,5 +157,27 @@ void Board::loadFromFile(string fileName)
 char Board::getElement(int x, int y)
 {
     return board[x][y];
+}
+
+void Board::saveBoardToFile(string file_name)
+{
+    cout << "Saving board to file\n";
+    std::string board_string;
+
+    fstream file;
+    file.open(file_name, fstream::out);
+
+    for(auto& i : board)
+    {
+        for (auto& j : i)
+        {
+            board_string+=j;
+        }
+        board_string+='\n';
+    }
+
+    board_string = rle_encoder.compress(board_string);
+
+    file << board_string;
 }
 

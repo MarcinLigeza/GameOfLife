@@ -3,6 +3,8 @@
 #include <string>
 #include <boost/filesystem/path.hpp>
 
+#include "rle_encoder.h"
+
 using namespace std;
 
 class Board
@@ -10,10 +12,11 @@ class Board
 private:
     vector<vector<char>> board;
     int size;
+    RLE_Encoder rle_encoder;
 
     void resize(int isize);
 public:
-    Board(unsigned int size = 10);
+    Board(unsigned int size = 100);
     ~Board();
 
     void print();
@@ -22,6 +25,7 @@ public:
     void iterate(int iterations);
     void loadFromFile(string fileName);
     char getElement(int x, int y);
-//    vector<vector<char>> readPatternfromFile(boost::filesystem::path path);
+
+    void saveBoardToFile(std::string file_name);
 };
 

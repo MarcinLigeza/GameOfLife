@@ -10,6 +10,8 @@
 #include <SFML/System/Vector2.hpp>
 #include <SFML/Window/Event.hpp>
 
+
+
 #define CUBE_WIDTH 10
 #define SIZE 100
 
@@ -18,15 +20,15 @@ using namespace std;
 
 int main()
 {
-    cout << "Starting\n";
     Board board(SIZE);
-    cout << "Starting\n";
-    board.loadFromFile("config.txt");
+    board.loadFromFile("../GameOfLife/config.txt");
 
-    boost::filesystem::path copperhead{"/home/marcin/qtProjects/GameofLife/patterns/copperhead.rle"};
-//    board.readPatternfromFile(copperhead);
-
-    cout << "Starting\n";
+    boost::filesystem::path copperhead("/home/marcin/Desktop/gol/GameOfLife/patterns/copperhead.rle");
+    cout << copperhead.empty();
+    RLE_Encoder tmp;
+    std::string xd= tmp.decompress(copperhead);
+    std::cout <<xd << "\n";
+    std::cout <<tmp.compress(xd);
 
     sf::RenderWindow window( sf::VideoMode(SIZE*CUBE_WIDTH + 200, SIZE*CUBE_WIDTH), "Game of Life");
     window.setFramerateLimit(20);
@@ -42,7 +44,10 @@ int main()
     bool iterate = false;
     sf::Event event;
 
+
+
     while (window.isOpen())
+//    while(false)
     {
         while(window.pollEvent(event))
         {
@@ -68,7 +73,8 @@ int main()
                     {
                         if((event.mouseButton.y >= button.getPosition().y) && (event.mouseButton.y <= button.getPosition().y + button.getSize().y))
                         {
-                            board.loadFromFile("config.txt");
+                            board.loadFromFile("../GameOfLife/config.txt");
+                            board.saveBoardToFile("../boardSave1.txt");
                         }
                     }
                 }
@@ -82,15 +88,17 @@ int main()
         }
 
         if (iterate)
+        {
             board.iteration();
 
+        }
         window.clear(sf::Color::White);
 
         for(int i = 0; i < SIZE; i++)
         {
             for (int j = 0; j < SIZE; j++)
             {
-                if(board.getElement(i,j) == 'O')
+                if(board.getElement(i,j) == 'o')
                 {
                     rec.setPosition(j*CUBE_WIDTH, i*CUBE_WIDTH);
                     window.draw(rec);
