@@ -3,13 +3,15 @@
 #include <string>
 #include <random>
 #include <time.h>
-#include <Windows.h>
 #include <fstream>
+#include <unistd.h>
 
+#include <boost/filesystem/fstream.hpp>
+#include <boost/algorithm/string.hpp>
 
 void Board::resize(int isize)
 {
-    size = isize + 2;
+    size = isize;
     board.resize(size);
     for (auto& i : board)
     {
@@ -30,16 +32,16 @@ Board::~Board()
 void Board::print()
 {
     string buffer{};
-    for (unsigned i = 1; i < size - 1; i++)
+    for (unsigned i = 0; i < size - 1; i++)
     {
-        for (unsigned j = 1; j < size - 1; j++)
+        for (unsigned j = 0; j < size - 1; j++)
         {
             buffer += board[i][j];
             buffer += ' ';
         }
         buffer += "\n";
     }
-    system("cls");
+    system("clear");
     cout << buffer;
 }
 
@@ -52,21 +54,19 @@ void Board::iteration()
     for (auto& i : nextboard)
         fill(i.begin(), i.end(), '-');
 
-    
-
     int aliveCount{ 0 };
-    for (unsigned i = 1; i < size - 1; i++)
+    for (unsigned i = 0; i < size; i++)
     {
-        for (unsigned j = 1; j < size - 1; j++)
+        for (unsigned j = 0; j < size; j++)
         {
-            if (board[i - 1][j - 1] == 'O') aliveCount++;
-            if (board[i - 1][j] == 'O') aliveCount++;
-            if (board[i - 1][j + 1] == 'O') aliveCount++;
-            if (board[i][j - 1] == 'O') aliveCount++;
-            if (board[i][j + 1] == 'O') aliveCount++;
-            if (board[i + 1][j - 1] == 'O') aliveCount++;
-            if (board[i + 1][j] == 'O') aliveCount++;
-            if (board[i + 1][j + 1] == 'O') aliveCount++;
+            if (board[(i==0) ? (size - 1) : (i - 1)][(j==0) ? (size-1) : (j - 1)] == 'O') aliveCount++;
+            if (board[(i==0) ? (size - 1) : (i - 1)][j] == 'O') aliveCount++;
+            if (board[(i==0) ? (size - 1) : (i - 1)][(j + 1)%size] == 'O') aliveCount++;
+            if (board[i][(j==0) ? (size-1) : (j - 1)] == 'O') aliveCount++;
+            if (board[i][(j + 1)%size] == 'O') aliveCount++;
+            if (board[(i + 1)%size][(j==0) ? (size-1) : (j - 1)] == 'O') aliveCount++;
+            if (board[(i + 1)%size][j] == 'O') aliveCount++;
+            if (board[(i + 1)%size][(j + 1)%size] == 'O') aliveCount++;
 
             if (board[i][j] == 'O')
             {
@@ -90,13 +90,13 @@ void Board::iteration()
             aliveCount = 0;
         }
     }
-    nextboard[size - 1] = nextboard[1];
-    nextboard[0] = nextboard[size - 2];
-    for (unsigned i = 0; i < size; i++)
-    {
-        nextboard[i][size - 1] = nextboard[i][1];
-        nextboard[i][0] = nextboard[i][size - 2];
-    }
+//    nextboard[size - 1] = nextboard[1];
+//    nextboard[0] = nextboard[size - 2];
+//    for (unsigned i = 0; i < size; i++)
+//    {
+//        nextboard[i][size - 1] = nextboard[i][1];
+//        nextboard[i][0] = nextboard[i][size - 2];
+//    }
 
     board = nextboard;
 }
@@ -108,7 +108,7 @@ void Board::setRandomPositions()
     {
         for (auto& j : i)
         {
-            if (rand() % 10 > 6)
+            if (rand() % 10 > 3)
             {
                 j = '-';
             }
@@ -125,7 +125,7 @@ void Board::iterate(int iterations)
     {
         iteration();
         print();
-        Sleep(100);
+        usleep(100000);
         //getchar();
     }
 }
@@ -135,18 +135,27 @@ void Board::loadFromFile(string fileName)
     ifstream plik;
     plik.open(fileName);
 
-    int isize;
+    int isize{};
     plik >> isize;
-    resize(isize);
+    if (isize > size)
+        resize(isize);
   
-    for (unsigned i = 1; i < size - 1; i++)
+    for (unsigned i = 0; i < isize; i++)
     {
-        for (unsigned j = 1; j < size - 1; j++)
+        for (unsigned j = 0; j < isize; j++)
         {
             char sign;
             plik >> sign;
             board[i][j] = sign;
+            cout << sign;
         }
+        cout << "\n";
     }
 
 }
+
+char Board::getElement(int x, int y)
+{
+    return board[x][y];
+}
+

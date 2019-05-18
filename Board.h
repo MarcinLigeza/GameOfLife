@@ -1,5 +1,7 @@
 #pragma once
 #include <vector>
+#include <string>
+#include <boost/filesystem/path.hpp>
 
 using namespace std;
 
@@ -19,5 +21,7 @@ public:
     void setRandomPositions();
     void iterate(int iterations);
     void loadFromFile(string fileName);
+    char getElement(int x, int y);
+//    vector<vector<char>> readPatternfromFile(boost::filesystem::path path);
 };
 
