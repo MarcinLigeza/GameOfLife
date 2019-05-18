@@ -149,7 +149,25 @@ std::string RLE_Encoder::compress(std::string pattern)
     }
     compressed.append("!");
 
-    return compressed;
+    std::string tmp;
+
+    for(int i = 0; i < compressed.size(); i++)
+    {
+        int count = 1;
+        while(i < compressed.size() && compressed[i] == compressed[i+1])
+        {
+            count ++;
+            i++;
+        }
+
+        if(count != 1 && compressed[i] == '$')
+            tmp.append(std::to_string(count));
+
+        tmp+=(compressed[i]);
+
+    }
+
+    return tmp;
 }
 
 
