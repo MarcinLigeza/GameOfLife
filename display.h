@@ -10,11 +10,13 @@
 class Display
 {
 public:
+    Display();
     Display(int i_size, int pixel_size, std::shared_ptr<sf::RenderWindow> i_target);
 
     void add_button(std::shared_ptr<Button> but);
     void onClick(sf::Event e);
     void draw(std::vector<std::vector<char>> board);
+    void setFPS(unsigned int fps);
 
 private:
     std::vector<std::shared_ptr<Button>> buttons;

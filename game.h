@@ -1,23 +1,35 @@
-//#ifndef GAME_H
-//#define GAME_H
+#ifndef GAME_H
+#define GAME_H
 
-//#include "Board.h"
-//#include "display.h"
+#include "Board.h"
+#include "display.h"
 
+class Game
+{
+public:
+    Game(unsigned int size, int pixel_size, std::shared_ptr<sf::RenderWindow> target);
 
-//class Game
-//{
-//public:
-//    Game(int const size, sf::RenderWindow& target);
+    void updateBoard();
+    void drawBoard();
+    void on_mouseClick(sf::Event& event);
 
-//    void updateBoard();
-//    void display();
-//    void on_mouseClick(sf::Event& event);
+    void loadPattern(std::string name, int x, int y);
 
-//private:
-//    Board board;
-////    Display display();
+    void setFPS(unsigned int fps);
 
-//};
+    void play();
+    void stop();
+    void next();
+    void prev();
 
-//#endif // GAME_H
+private:
+    Board board;
+    Display display;
+
+    int size;
+    int pixel_size;
+
+    void addButtons();
+};
+
+#endif // GAME_H

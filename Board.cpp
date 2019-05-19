@@ -21,9 +21,13 @@ void Board::resize(int isize)
     }
 }
 
-Board::Board(unsigned int isize/*, Display& idisplay*/)
+Board::Board()
 {
-//    display = idisplay;
+
+}
+
+Board::Board(unsigned int isize)
+{
     resize(isize);
 }
 

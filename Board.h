@@ -14,11 +14,11 @@ private:
     vector<vector<char>> board;
     int size;
     RLE_Encoder rle_encoder;
-//    Display& display;
 
     void resize(int isize);
 public:
-    Board(unsigned int size/*, Display& display*/);
+    Board();
+    Board(unsigned int size);
     ~Board();
 
     void print();
