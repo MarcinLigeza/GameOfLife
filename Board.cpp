@@ -118,9 +118,7 @@ void Board::loadFromFile(string fileName)
             char sign;
             plik >> sign;
             board[i][j] = sign;
-            cout << sign;
         }
-        cout << "\n";
     }
 
 
@@ -140,23 +138,17 @@ void Board::setPattern(boost::filesystem::path path, int x, int y)
 {
     std::string pattern = rle_encoder.decompress(path);
 
-    std::cout << pattern << "\n";
-
     std::vector<std::string> lines;
     boost::split(lines, pattern, boost::is_any_of("\n"));
 
     int ix = stoi(lines[0]);
     int iy = stoi(lines[1]);
 
-    std::cout << ix << "\n";
-    std::cout << iy << "\n";
-
     for(int i = 0; i < iy; i++)
     {
-        std::cout << lines[i] << "\n";
         for(int j = 0; j < ix; j++)
         {
-            board[i+y][j+x] = lines[i+2][j];
+            board[(i+y)%size][(j+x)%size] = lines[i+2][j];
         }
     }
 }
@@ -196,8 +188,6 @@ void Board::saveBoardToFile(string file_name)
 void Board::loadBoardFromFile(boost::filesystem::path path)
 {
     std::string boardstring = rle_encoder.decompress(path);
-
-    std::cout << boardstring;
 
     std::vector<std::string> lines;
     boost::split(lines, boardstring, boost::is_any_of("\n"));

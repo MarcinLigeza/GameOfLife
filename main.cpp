@@ -21,10 +21,6 @@
 
 using namespace std;
 
-void fun(sf::Event e)
-{
-    std::cout << "Function to test: \n";
-}
 
 int main()
 {
@@ -34,8 +30,8 @@ int main()
     Game game(SIZE, CUBE_WIDTH, window);
 
     game.loadPattern("copperhead", 10, 10);
-    game.loadPattern("gosperglidergun", 20, 30);
-    game.loadPattern("queenbeeshuttle", 20, 60);
+    game.loadPattern("gosperglidergun", 80, 30);
+    game.loadPattern("queenbeeshuttle", 40, 60);
 
     game.setFPS(20);
 

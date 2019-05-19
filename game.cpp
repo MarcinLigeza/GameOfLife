@@ -6,8 +6,6 @@
 
 Game::Game(unsigned int i_size, int i_pixel_size, std::shared_ptr<sf::RenderWindow> target)
 {
-    std::cout << "creating Game\n";
-
     size = i_size;
     pixel_size = i_pixel_size;
     iterating = false;
@@ -15,10 +13,7 @@ Game::Game(unsigned int i_size, int i_pixel_size, std::shared_ptr<sf::RenderWind
     display = Display(i_size, i_pixel_size, target);
     board = Board(size);
 
-    std::cout << "creating game 2\n";
-
     addButtons();
-    std::cout << "buttons added\n";
 }
 
 void Game::updateBoard()

@@ -18,7 +18,6 @@ RLE_Encoder::~RLE_Encoder()
 
 std::string RLE_Encoder::decompress(boost::filesystem::path path)
 {
-    std::cout << path.c_str() <<"\n";
     std::fstream file(path.c_str());
 
     std::string compressed((std::istreambuf_iterator<char>(file)), (std::istreambuf_iterator<char>()));
@@ -53,11 +52,6 @@ std::string RLE_Encoder::decompress(boost::filesystem::path path)
     decompressed += std::to_string(y) + '\n';
 
     lines.erase(lines.begin());
-
-    for(auto& i : lines)
-    {
-        std::cout << i << "\n";
-    }
 
     for(auto& i : lines)
     {
