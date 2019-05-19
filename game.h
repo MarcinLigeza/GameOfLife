@@ -12,6 +12,8 @@ public:
     void updateBoard();
     void drawBoard();
     void on_mouseClick(sf::Event& event);
+    void on_TextEntered(sf::Event& event);
+    void on_EnterPressed(sf::Event& event);
 
     void loadPattern(std::string name, int x, int y);
 
@@ -22,6 +24,8 @@ public:
     void next();
     void prev();
 
+
+
 private:
     Board board;
     Display display;
@@ -31,6 +35,7 @@ private:
     bool iterating;
 
     void addButtons();
+    void addTextBox();
 };
 
 #endif // GAME_H

@@ -120,8 +120,6 @@ void Board::loadFromFile(string fileName)
             board[i][j] = sign;
         }
     }
-
-
 }
 
 char Board::getElement(int x, int y)

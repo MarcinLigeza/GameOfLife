@@ -16,6 +16,17 @@ void Display::onClick(sf::Event e)
 {
     for(auto& i : buttons)
         i->onClick(e);
+    textBox->onClick(e);
+}
+
+void Display::onTextEntered(sf::Event &event)
+{
+    textBox->onTextEntered(event);
+}
+
+void Display::onEnterPressed(sf::Event &event)
+{
+    textBox->onEnterPressed(event);
 }
 
 void Display::draw(std::vector<std::vector<char> > board)
@@ -39,14 +50,31 @@ void Display::draw(std::vector<std::vector<char> > board)
 
     for(auto& i : buttons)
         target->draw(*i);
+
+    sf::Font font;
+    font.loadFromFile("../GameOfLife/OpenSans.ttf");
+    sf::Text fpsText;
+    fpsText.setFont(font);
+    fpsText.setPosition(0,0);
+    fpsText.setString(std::to_string(fps));
+    fpsText.setFillColor(sf::Color::Black);
+    target->draw(fpsText);
+
+    target->draw(*textBox);
 }
 
-void Display::setFPS(unsigned int fps)
+void Display::setFPS(unsigned int i_fps)
 {
-    target->setFramerateLimit(fps);
+    target->setFramerateLimit(i_fps);
+    fps = i_fps;
 }
 
 void Display::add_button(std::shared_ptr<Button> but)
 {
     buttons.push_back(but);
+}
+
+void Display::set_textBox(std::shared_ptr<TextBox> box)
+{
+    textBox = box;
 }

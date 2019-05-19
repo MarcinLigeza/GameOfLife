@@ -1,6 +1,7 @@
 #include "game.h"
 
 #include "shapebutton.h"
+#include "textbox.h"
 
 #include <iostream>
 
@@ -13,7 +14,9 @@ Game::Game(unsigned int i_size, int i_pixel_size, std::shared_ptr<sf::RenderWind
     display = Display(i_size, i_pixel_size, target);
     board = Board(size);
 
+    setFPS(20);
     addButtons();
+    addTextBox();
 }
 
 void Game::updateBoard()
@@ -27,9 +30,19 @@ void Game::drawBoard()
     display.draw(board.getBoard());
 }
 
-void Game::on_mouseClick(sf::Event &event)
+void Game::on_mouseClick(sf::Event& event)
 {
     display.onClick(event);
+}
+
+void Game::on_TextEntered(sf::Event& event)
+{
+    display.onTextEntered(event);
+}
+
+void Game::on_EnterPressed(sf::Event& event)
+{
+    display.onEnterPressed(event);
 }
 
 void Game::loadPattern(string name, int x, int y)
@@ -138,6 +151,15 @@ void Game::addButtons()
              sf::Vector2f(b_width, b_height), prevfun, prevShape);
     display.add_button(prevButton);
 
+}
+
+void Game::addTextBox()
+{
+    std::function<void(unsigned int)> textFun = std::bind(&Game::setFPS, this, std::placeholders::_1);
+    std::shared_ptr<TextBox> textBox =
+            make_shared<TextBox>(sf::Vector2f(size*pixel_size, 500), sf::Vector2f(150, 50),
+                                 textFun);
+    display.set_textBox(textBox);
 }
 
 

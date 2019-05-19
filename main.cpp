@@ -33,8 +33,6 @@ int main()
     game.loadPattern("gosperglidergun", 80, 30);
     game.loadPattern("queenbeeshuttle", 40, 60);
 
-    game.setFPS(20);
-
     bool iterate = false;
     sf::Event event;
     while (window->isOpen())
@@ -42,11 +40,17 @@ int main()
         while(window->pollEvent(event))
         {
             switch (event.type) {
+            case sf::Event::TextEntered:
+                game.on_TextEntered(event);
+                break;
             case sf::Event::KeyPressed:
                 {
                     switch(event.key.code){
                     case sf::Keyboard::Escape:
                         window->close();
+                        break;
+                    case sf::Keyboard::Return:
+                        game.on_EnterPressed(event);
                         break;
                     default:
                         break;

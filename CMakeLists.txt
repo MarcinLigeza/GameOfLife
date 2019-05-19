@@ -16,6 +16,8 @@ add_executable(GameofLife "main.cpp"
                                "display.h"
                                "button.cpp"
                                "button.h"
+                               "textbox.cpp"
+                               "textbox.h"
                                )
 
 set (CMAKE_CXX_STANDARD 17)
