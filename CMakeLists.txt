@@ -10,6 +10,12 @@ add_executable(GameofLife "main.cpp"
                                "textbutton.cpp"
                                "shapebutton.h"
                                "shapebutton.cpp"
+                               "game.cpp"
+                               "game.h"
+                               "display.cpp"
+                               "display.h"
+                               "button.cpp"
+                               "button.h"
                                )
 
 set (CMAKE_CXX_STANDARD 17)

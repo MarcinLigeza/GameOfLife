@@ -21,8 +21,9 @@ void Board::resize(int isize)
     }
 }
 
-Board::Board(unsigned int isize)
+Board::Board(unsigned int isize/*, Display& idisplay*/)
 {
+//    display = idisplay;
     resize(isize);
 }
 
@@ -95,18 +96,6 @@ void Board::iteration()
     board = nextboard;
 }
 
-
-void Board::iterate(int iterations)
-{
-    for (int i = 0; i < iterations; i++)
-    {
-        iteration();
-        print();
-        usleep(100000);
-        //getchar();
-    }
-}
-
 void Board::loadFromFile(string fileName)
 {
     ifstream plik;
@@ -136,6 +125,11 @@ void Board::loadFromFile(string fileName)
 char Board::getElement(int x, int y)
 {
     return board[x][y];
+}
+
+vector<vector<char> > Board::getBoard()
+{
+    return board;
 }
 
 void Board::setPattern(boost::filesystem::path path, int x, int y)

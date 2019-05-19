@@ -4,6 +4,7 @@
 #include <boost/filesystem/path.hpp>
 
 #include "rle_encoder.h"
+#include "display.h"
 
 using namespace std;
 
@@ -13,17 +14,19 @@ private:
     vector<vector<char>> board;
     int size;
     RLE_Encoder rle_encoder;
+//    Display& display;
 
     void resize(int isize);
 public:
-    Board(unsigned int size = 100);
+    Board(unsigned int size/*, Display& display*/);
     ~Board();
 
     void print();
     void iteration();
     void loadFromFile(string fileName);
-    void iterate(int iterations);
     char getElement(int x, int y);
+
+    vector<vector<char>> getBoard();
 
     void setPattern(boost::filesystem::path path, int x, int y);
 

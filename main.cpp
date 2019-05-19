@@ -1,6 +1,7 @@
 #include "Board.h"
 
 #include <iostream>
+#include <functional>
 
 #include <boost/filesystem/path.hpp>
 #include <boost/filesystem/fstream.hpp>
@@ -13,11 +14,17 @@
 #include "textbutton.h"
 #include "shapebutton.h"
 
+#include "display.h"
+
 #define CUBE_WIDTH 10
 #define SIZE 100
 
 using namespace std;
-//using namespace boost::filesystem;
+
+void fun(sf::Event e)
+{
+    std::cout << "Function to test: \n";
+}
 
 int main()
 {
@@ -50,7 +57,6 @@ int main()
     sf::Font font;
     font.loadFromFile("../GameOfLife/OpenSans.ttf");
 
-    TextButton but1("Przycisk",font, sf::Vector2f(CUBE_WIDTH*SIZE, 300), sf::Vector2f(150,50));
 
     sf::ConvexShape shape;
     shape.setPointCount(7);
@@ -63,15 +69,29 @@ int main()
     shape.setPoint(6, sf::Vector2f(0,40));
     shape.setFillColor(sf::Color::Black);
     shape.setOrigin(20,20);
-    ShapeButton but2(shape, sf::Vector2f(CUBE_WIDTH*SIZE, 500), sf::Vector2f(150,50));
+
+    sf::Event eventtmp = sf::Event();
+    std::function<void(sf::Event)> funtmp = fun;
+    std::shared_ptr<Button> but2 = std::make_shared<ShapeButton>(sf::Vector2f(CUBE_WIDTH*SIZE, 500), sf::Vector2f(150,50),funtmp,shape);
+    std::shared_ptr<Button> but1 = std::make_shared<TextButton>(sf::Vector2f(CUBE_WIDTH*SIZE, 300), sf::Vector2f(150,50),funtmp,"Przycisk");
+
+//    std::vector<Button> buttons;
+//    buttons.push_back(but1);
+//    buttons.push_back(but2);
 
 //    Button but(&window, CUBE_WIDTH*SIZE, 100, 150,50, "Reset");
 
+
+    shared_ptr<sf::RenderWindow> wind = shared_ptr<sf::RenderWindow>(&window);
+    Display display(SIZE, CUBE_WIDTH, wind);
+    display.add_button(but1);
+    display.add_button(but2);
+
+
+
+
     bool iterate = false;
     sf::Event event;
-
-
-
     while (window.isOpen())
 //    while(false)
     {
@@ -95,8 +115,7 @@ int main()
             case sf::Event::MouseButtonPressed:
                 if(event.mouseButton.button == sf::Mouse::Left)
                 {
-                    but1.isPressed(event);
-                    but2.isPressed(event);
+                    display.onClick(event);
                     if((event.mouseButton.x >= button.getPosition().x) && (event.mouseButton.x <= button.getPosition().x + button.getSize().x))
                     {
                         if((event.mouseButton.y >= button.getPosition().y) && (event.mouseButton.y <= button.getPosition().y + button.getSize().y))
@@ -118,26 +137,10 @@ int main()
         if (iterate)
         {
             board.iteration();
-
         }
         window.clear(sf::Color::White);
 
-        for(int i = 0; i < SIZE; i++)
-        {
-            for (int j = 0; j < SIZE; j++)
-            {
-                if(board.getElement(i,j) == 'o')
-                {
-                    rec.setPosition(j*CUBE_WIDTH, i*CUBE_WIDTH);
-                    window.draw(rec);
-                }
-            }
-        }
-
-        window.draw(button);
-        window.draw(but1);
-        window.draw(but2);
-//        but.draw();
+        display.draw(board.getBoard());
         window.display();
     }
 }
