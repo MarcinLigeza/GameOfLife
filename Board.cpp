@@ -95,23 +95,6 @@ void Board::iteration()
     board = nextboard;
 }
 
-void Board::setRandomPositions()
-{
-    srand(time(NULL));
-    for (auto& i : board)
-    {
-        for (auto& j : i)
-        {
-            if (rand() % 10 > 3)
-            {
-                j = 'b';
-            }
-            else {
-                j = 'o';
-            }
-        }
-    }
-}
 
 void Board::iterate(int iterations)
 {
@@ -153,6 +136,31 @@ void Board::loadFromFile(string fileName)
 char Board::getElement(int x, int y)
 {
     return board[x][y];
+}
+
+void Board::setPattern(boost::filesystem::path path, int x, int y)
+{
+    std::string pattern = rle_encoder.decompress(path);
+
+    std::cout << pattern << "\n";
+
+    std::vector<std::string> lines;
+    boost::split(lines, pattern, boost::is_any_of("\n"));
+
+    int ix = stoi(lines[0]);
+    int iy = stoi(lines[1]);
+
+    std::cout << ix << "\n";
+    std::cout << iy << "\n";
+
+    for(int i = 0; i < iy; i++)
+    {
+        std::cout << lines[i] << "\n";
+        for(int j = 0; j < ix; j++)
+        {
+            board[i+y][j+x] = lines[i+2][j];
+        }
+    }
 }
 
 void Board::saveBoardToFile(string file_name)
@@ -203,7 +211,7 @@ void Board::loadBoardFromFile(boost::filesystem::path path)
     {
         for(int j = 0; j < y; j++)
         {
-            board[i][j] = lines[i][j];
+            board[i][j] = lines[i+2][j];
         }
     }
 

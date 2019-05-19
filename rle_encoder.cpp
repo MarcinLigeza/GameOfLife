@@ -38,11 +38,6 @@ std::string RLE_Encoder::decompress(boost::filesystem::path path)
         }
     }
 
-    for(auto& i : lines)
-    {
-        std::cout << i << "\n";
-    }
-
     int x{};
     int y{};
 
@@ -59,6 +54,10 @@ std::string RLE_Encoder::decompress(boost::filesystem::path path)
 
     lines.erase(lines.begin());
 
+    for(auto& i : lines)
+    {
+        std::cout << i << "\n";
+    }
 
     for(auto& i : lines)
     {
