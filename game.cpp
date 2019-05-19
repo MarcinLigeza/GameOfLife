@@ -10,6 +10,7 @@ Game::Game(unsigned int i_size, int i_pixel_size, std::shared_ptr<sf::RenderWind
 
     size = i_size;
     pixel_size = i_pixel_size;
+    iterating = false;
 
     display = Display(i_size, i_pixel_size, target);
     board = Board(size);
@@ -22,7 +23,8 @@ Game::Game(unsigned int i_size, int i_pixel_size, std::shared_ptr<sf::RenderWind
 
 void Game::updateBoard()
 {
-    board.iteration();
+    if(iterating)
+        board.iteration();
 }
 
 void Game::drawBoard()
@@ -48,12 +50,12 @@ void Game::setFPS(unsigned int fps)
 
 void Game::play()
 {
-
+    iterating = true;
 }
 
 void Game::stop()
 {
-
+    iterating = false;
 }
 
 void Game::next()
@@ -100,7 +102,7 @@ void Game::addButtons()
     std::function<void(sf::Event)> stopfun = std::bind(&Game::stop, this);
     std::shared_ptr<Button> stopButton = std::make_shared<ShapeButton>
             (sf::Vector2f(size*pixel_size, separation+(separation+b_height)*1),
-             sf::Vector2f(b_width, b_height), stopfun, playShape);
+             sf::Vector2f(b_width, b_height), stopfun, stopShape);
     display.add_button(stopButton);
 
     //next button ########################

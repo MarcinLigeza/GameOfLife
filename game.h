@@ -28,6 +28,7 @@ private:
 
     int size;
     int pixel_size;
+    bool iterating;
 
     void addButtons();
 };
