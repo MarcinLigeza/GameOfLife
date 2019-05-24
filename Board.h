@@ -13,9 +13,16 @@ class Board
 private:
     vector<vector<char>> board;
     int size;
+    unsigned int boardSizeBytes;
+    unsigned int maxIterations;
+
     RLE_Encoder rle_encoder;
 
+    vector<vector<vector<char>>> history;
+
     void resize(int isize);
+//    void checkCell(vector<vector<char> > &board, int i, int j, vector<vector<char> > &nextboard);
+//    void checkRow(vector<vector<char> > &board, int i, vector<vector<char> > &nextboard);
 public:
     Board();
     Board(unsigned int size);
@@ -25,6 +32,7 @@ public:
     void iteration();
     void loadFromFile(string fileName);
     char getElement(int x, int y);
+    unsigned int getMaxIterations();
 
     vector<vector<char>> getBoard();
 
@@ -32,5 +40,8 @@ public:
 
     void saveBoardToFile(std::string file_name);
     void loadBoardFromFile(boost::filesystem::path path);
+
+    void prevBoard();
+    unsigned int historySize();
 };
 

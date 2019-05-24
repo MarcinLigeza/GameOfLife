@@ -12,7 +12,7 @@ class Display
 {
 public:
     Display();
-    Display(int i_size, int pixel_size, std::shared_ptr<sf::RenderWindow> i_target);
+    Display(int i_size, unsigned int i_maxIterations, int pixel_size, std::shared_ptr<sf::RenderWindow> i_target);
 
     void add_button(std::shared_ptr<Button> but);
     void set_textBox(std::shared_ptr<TextBox> box);
@@ -21,7 +21,7 @@ public:
     void onTextEntered(sf::Event &event);
     void onEnterPressed(sf::Event &event);
 
-    void draw(std::vector<std::vector<char>> board);
+    void draw(std::vector<std::vector<char>> board, unsigned int);
     void setFPS(unsigned int i_fps);
 
 private:
@@ -30,6 +30,7 @@ private:
 
     std::shared_ptr<sf::RenderWindow> target;
     int size;
+    unsigned int maxIterations;
     int pixel_size;
     unsigned int fps;
 };

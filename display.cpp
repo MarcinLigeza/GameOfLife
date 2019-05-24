@@ -5,11 +5,12 @@ Display::Display()
 
 }
 
-Display::Display(int i_size, int i_pixel_size, std::shared_ptr<sf::RenderWindow> i_target)
+Display::Display(int i_size, unsigned int i_maxIterations, int i_pixel_size, std::shared_ptr<sf::RenderWindow> i_target)
 {
     target = i_target;
     size = i_size;
     pixel_size = i_pixel_size;
+    maxIterations = i_maxIterations;
 }
 
 void Display::onClick(sf::Event e)
@@ -29,7 +30,7 @@ void Display::onEnterPressed(sf::Event &event)
     textBox->onEnterPressed(event);
 }
 
-void Display::draw(std::vector<std::vector<char> > board)
+void Display::draw(std::vector<std::vector<char> > board, unsigned int historySize)
 {
     sf::RectangleShape rec(sf::Vector2f(pixel_size, pixel_size));
     rec.setFillColor(sf::Color::Blue);
@@ -59,6 +60,13 @@ void Display::draw(std::vector<std::vector<char> > board)
     fpsText.setString(std::to_string(fps));
     fpsText.setFillColor(sf::Color::Black);
     target->draw(fpsText);
+
+    sf::Text ramText;
+    ramText.setFont(font);
+    ramText.setPosition(1000,0);
+    ramText.setString(std::to_string(historySize) + "/" + std::to_string(maxIterations));
+    ramText.setFillColor(sf::Color::Black);
+    target->draw(ramText);
 
     target->draw(*textBox);
 }

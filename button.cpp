@@ -24,7 +24,6 @@ bool Button::onClick(sf::Event e)
         if((e.mouseButton.y >= rectangle.getPosition().y) &&
                 (e.mouseButton.y <= rectangle.getPosition().y + rectangle.getSize().y))
         {
-            std::cout << "button clicked" << "\n";
             callback(e);
             return true;
         }

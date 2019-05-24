@@ -1,10 +1,10 @@
 #include "Board.h"
+
 #include <iostream>
 #include <string>
-#include <random>
-#include <time.h>
-#include <fstream>
 #include <unistd.h>
+#include <thread>
+#include <algorithm>
 
 #include <boost/filesystem/fstream.hpp>
 #include <boost/algorithm/string.hpp>
@@ -26,9 +26,30 @@ Board::Board()
 
 }
 
+unsigned long get_free_mem()
+{
+    std::string token;
+        std::ifstream file("/proc/meminfo");
+        while(file >> token) {
+            if(token == "MemFree:") {
+                unsigned long mem;
+                if(file >> mem) {
+                    return mem;
+                } else {
+                    return 0;
+                }
+            }
+            // ignore rest of the line
+            file.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        }
+        return 0; // nothing found
+}
+
 Board::Board(unsigned int isize)
 {
     resize(isize);
+    boardSizeBytes = sizeof(board) + (sizeof(char)*size*size);
+    maxIterations = get_free_mem() * 1024 / boardSizeBytes;
 }
 
 Board::~Board()
@@ -51,6 +72,42 @@ void Board::print()
     cout << buffer;
 }
 
+void checkCell(vector<vector<char>> &board, int i, int j, vector<vector<char>> &nextboard)
+{
+    int size = board.size();
+    int aliveCount{ 0 };
+    if (board[(i==0) ? (size - 1) : (i - 1)][(j==0) ? (size-1) : (j - 1)] == 'o') aliveCount++;
+    if (board[(i==0) ? (size - 1) : (i - 1)][j] == 'o') aliveCount++;
+    if (board[(i==0) ? (size - 1) : (i - 1)][(j + 1)%size] == 'o') aliveCount++;
+    if (board[i][(j==0) ? (size-1) : (j - 1)] == 'o') aliveCount++;
+    if (board[i][(j + 1)%size] == 'o') aliveCount++;
+    if (board[(i + 1)%size][(j==0) ? (size-1) : (j - 1)] == 'o') aliveCount++;
+    if (board[(i + 1)%size][j] == 'o') aliveCount++;
+    if (board[(i + 1)%size][(j + 1)%size] == 'o') aliveCount++;
+
+    if (board[i][j] == 'o' && aliveCount == 2)
+    {
+        nextboard[i][j] =  'o';
+    }
+    else if (aliveCount == 3)
+    {
+        nextboard[i][j] =  'o';
+    }
+    else
+    {
+        nextboard[i][j] =  'b';
+    }
+}
+
+void checkRow(vector<vector<char>> &board, int i, vector<vector<char>> &nextboard)
+{
+    for(unsigned k = i; (k < i+13 && k < board.size()); k++)
+    for (unsigned j = 0; j < board.size(); j++)
+    {
+        checkCell(board, k, j, nextboard);
+    }
+}
+
 void Board::iteration()
 {
     vector<vector<char>> nextboard;
@@ -60,42 +117,19 @@ void Board::iteration()
     for (auto& i : nextboard)
         fill(i.begin(), i.end(), 'b');
 
-    int aliveCount{ 0 };
-    for (unsigned i = 0; i < size; i++)
+    vector<thread> threads(8);
+
+    for (unsigned i = 0; i < 8; i++)
     {
-        for (unsigned j = 0; j < size; j++)
-        {
-            if (board[(i==0) ? (size - 1) : (i - 1)][(j==0) ? (size-1) : (j - 1)] == 'o') aliveCount++;
-            if (board[(i==0) ? (size - 1) : (i - 1)][j] == 'o') aliveCount++;
-            if (board[(i==0) ? (size - 1) : (i - 1)][(j + 1)%size] == 'o') aliveCount++;
-            if (board[i][(j==0) ? (size-1) : (j - 1)] == 'o') aliveCount++;
-            if (board[i][(j + 1)%size] == 'o') aliveCount++;
-            if (board[(i + 1)%size][(j==0) ? (size-1) : (j - 1)] == 'o') aliveCount++;
-            if (board[(i + 1)%size][j] == 'o') aliveCount++;
-            if (board[(i + 1)%size][(j + 1)%size] == 'o') aliveCount++;
-
-            if (board[i][j] == 'o')
-            {
-                if (aliveCount == 3 || aliveCount == 2)
-                {
-                    nextboard[i][j] = 'o';
-                }
-                else
-                {
-                    nextboard[i][j] = 'b';
-                }
-            }
-            else if (aliveCount == 3)
-            {
-                nextboard[i][j] = 'o';
-            }
-            else {
-                nextboard[i][j] = 'b';
-            }
-
-            aliveCount = 0;
-        }
+        threads[i] = std::thread(checkRow, std::ref(board), i*13, std::ref(nextboard));
     }
+
+    for (unsigned i = 0; i < threads.size(); i++)
+    {
+        threads[i].join();
+    }
+
+    history.push_back(board);
 
     board = nextboard;
 }
@@ -125,6 +159,11 @@ void Board::loadFromFile(string fileName)
 char Board::getElement(int x, int y)
 {
     return board[x][y];
+}
+
+unsigned int Board::getMaxIterations()
+{
+    return maxIterations;
 }
 
 vector<vector<char> > Board::getBoard()
@@ -201,6 +240,24 @@ void Board::loadBoardFromFile(boost::filesystem::path path)
         }
     }
 
+}
+
+void Board::prevBoard()
+{
+    if(history.empty())
+    {
+        std::cout << "History is empty\n";
+    }
+    else
+    {
+        std::copy(history.back().begin(), history.back().end(), board.begin());
+        history.pop_back();
+    }
+}
+
+unsigned int Board::historySize()
+{
+    history.size();
 }
 
 

@@ -11,8 +11,8 @@ Game::Game(unsigned int i_size, int i_pixel_size, std::shared_ptr<sf::RenderWind
     pixel_size = i_pixel_size;
     iterating = false;
 
-    display = Display(i_size, i_pixel_size, target);
     board = Board(size);
+    display = Display(i_size,board.getMaxIterations(), i_pixel_size, target);
 
     setFPS(20);
     addButtons();
@@ -27,7 +27,7 @@ void Game::updateBoard()
 
 void Game::drawBoard()
 {
-    display.draw(board.getBoard());
+    display.draw(board.getBoard(), board.historySize());
 }
 
 void Game::on_mouseClick(sf::Event& event)
@@ -68,19 +68,21 @@ void Game::stop()
 
 void Game::next()
 {
-
+    board.iteration();
 }
 
 void Game::prev()
 {
-
+    board.prevBoard();
 }
 
 void Game::addButtons()
 {
     int b_height = 50;
     int b_width = 150;
-    int separation = 30;
+    int separation = 50;
+
+    int x_pos = size*pixel_size+separation;
 
     //play button ###########################
     sf::ConvexShape playShape;
@@ -93,7 +95,7 @@ void Game::addButtons()
 
     std::function<void(sf::Event)> playfun = std::bind(&Game::play, this);
     std::shared_ptr<Button> playButton = std::make_shared<ShapeButton>
-            (sf::Vector2f(size*pixel_size, separation), sf::Vector2f(b_width, b_height), playfun, playShape);
+            (sf::Vector2f(x_pos, separation), sf::Vector2f(b_width, b_height), playfun, playShape);
     display.add_button(playButton);
 
 
@@ -109,7 +111,7 @@ void Game::addButtons()
 
     std::function<void(sf::Event)> stopfun = std::bind(&Game::stop, this);
     std::shared_ptr<Button> stopButton = std::make_shared<ShapeButton>
-            (sf::Vector2f(size*pixel_size, separation+(separation+b_height)*1),
+            (sf::Vector2f(x_pos, separation+(separation+b_height)*1),
              sf::Vector2f(b_width, b_height), stopfun, stopShape);
     display.add_button(stopButton);
 
@@ -128,7 +130,7 @@ void Game::addButtons()
 
     std::function<void(sf::Event)> nextfun = std::bind(&Game::next, this);
     std::shared_ptr<Button> nextButton = std::make_shared<ShapeButton>
-            (sf::Vector2f(size*pixel_size, separation + (separation+b_height)*2),
+            (sf::Vector2f(x_pos, separation + (separation+b_height)*2),
              sf::Vector2f(b_width, b_height), nextfun, nextShape);
     display.add_button(nextButton);
 
@@ -147,7 +149,7 @@ void Game::addButtons()
 
     std::function<void(sf::Event)> prevfun = std::bind(&Game::prev, this);
     std::shared_ptr<Button> prevButton = std::make_shared<ShapeButton>
-            (sf::Vector2f(size*pixel_size, separation + (separation+b_height)*3),
+            (sf::Vector2f(x_pos, separation + (separation+b_height)*3),
              sf::Vector2f(b_width, b_height), prevfun, prevShape);
     display.add_button(prevButton);
 
@@ -155,9 +157,11 @@ void Game::addButtons()
 
 void Game::addTextBox()
 {
+    int x_pos = size*pixel_size+50;
+
     std::function<void(unsigned int)> textFun = std::bind(&Game::setFPS, this, std::placeholders::_1);
     std::shared_ptr<TextBox> textBox =
-            make_shared<TextBox>(sf::Vector2f(size*pixel_size, 500), sf::Vector2f(150, 50),
+            make_shared<TextBox>(sf::Vector2f(x_pos, 500), sf::Vector2f(150, 50),
                                  textFun);
     display.set_textBox(textBox);
 }
