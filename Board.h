@@ -4,7 +4,6 @@
 #include <boost/filesystem/path.hpp>
 
 #include "rle_encoder.h"
-#include "display.h"
 
 using namespace std;
 
@@ -21,8 +20,6 @@ private:
     vector<vector<vector<char>>> history;
 
     void resize(int isize);
-//    void checkCell(vector<vector<char> > &board, int i, int j, vector<vector<char> > &nextboard);
-//    void checkRow(vector<vector<char> > &board, int i, vector<vector<char> > &nextboard);
 public:
     Board();
     Board(unsigned int size);

@@ -11,9 +11,6 @@
 #include <SFML/System/Vector2.hpp>
 #include <SFML/Window/Event.hpp>
 
-//#include "textbutton.h"
-//#include "shapebutton.h"
-
 #include "game.h"
 
 #define CUBE_WIDTH 10
@@ -24,7 +21,7 @@ using namespace std;
 
 int main()
 {
-    cout << "STARTING\n";
+    cout << "STARTING version 1.0\n";
 
     std::shared_ptr<sf::RenderWindow> window = make_shared<sf::RenderWindow>(sf::VideoMode(SIZE*CUBE_WIDTH + 300, SIZE*CUBE_WIDTH), "Game of Life");
     Game game(SIZE, CUBE_WIDTH, window);
